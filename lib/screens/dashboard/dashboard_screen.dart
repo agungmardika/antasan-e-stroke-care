@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../monitoring/monitoring_pasien_screen.dart';
+import '../edukasi/edukasi_stroke_screen.dart';
+import '../monitoring/log_rehabilitasi_screen.dart';
+import '../chat_screen.dart';
+import 'profil_kader_screen.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -12,482 +17,529 @@ class DashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F6FA),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            // HEADER
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.fromLTRB(
-                20,
-                50,
-                20,
-                25,
-              ),
-              decoration: const BoxDecoration(
-                color: primaryBlue,
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(30),
-                  bottomRight: Radius.circular(30),
+      backgroundColor: const Color(0xFFF8F9FA),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              _buildHeader(context),
+              const SizedBox(height: 16),
+              _buildWelcomeSection(),
+              const SizedBox(height: 24),
+              _buildStatusPasien(),
+              const SizedBox(height: 24),
+              _buildMenuGrid(context),
+              const SizedBox(height: 24),
+              _buildNotifications(context),
+              const SizedBox(height: 30),
+            ],
+          ),
+        ),
+      ),
+      bottomNavigationBar: _buildBottomNav(context),
+    );
+  }
+
+  Widget _buildHeader(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      child: Row(
+        children: [
+          Image.asset('assets/images/logo_antasan.png', height: 45),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                RichText(
+                  text: TextSpan(
+                    style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold),
+                    children: const [
+                      TextSpan(text: 'ANTASAN ', style: TextStyle(color: primaryBlue)),
+                      TextSpan(text: 'e-Stroke Care', style: TextStyle(color: primaryRed)),
+                    ],
+                  ),
+                ),
+                Text(
+                  'Telenursing System',
+                  style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey[600], fontWeight: FontWeight.w500),
+                ),
+              ],
+            ),
+          ),
+          Stack(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10),
+                  ],
+                ),
+                child: IconButton(
+                  icon: const Icon(Icons.notifications_outlined, color: primaryBlue),
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text("Tidak ada notifikasi baru", style: GoogleFonts.poppins(color: Colors.white)),
+                        backgroundColor: primaryBlue,
+                        duration: const Duration(seconds: 2),
+                      ),
+                    );
+                  },
                 ),
               ),
-              child: Row(
-                children: [
-                  CircleAvatar(
-                    radius: 28,
-                    backgroundColor: Colors.white,
-                    child: Image.asset(
-                      'assets/images/logo_antasan.png',
-                      height: 40,
-                    ),
+              Positioned(
+                right: 12,
+                top: 12,
+                child: Container(
+                  width: 10,
+                  height: 10,
+                  decoration: const BoxDecoration(
+                    color: primaryRed,
+                    shape: BoxShape.circle,
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "ANTASAN",
-                          style: GoogleFonts.poppins(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        Text(
-                          "e-Stroke Care",
-                          style: GoogleFonts.poppins(
-                            color: Colors.white70,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildWelcomeSection() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Selamat Datang,",
+                  style: GoogleFonts.poppins(fontSize: 16, color: Colors.grey[700]),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  "Kader Sigap Annisa!",
+                  style: GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.bold, color: primaryBlue),
+                ),
+                const SizedBox(height: 6),
+                Row(
+                  children: [
+                    const Icon(Icons.location_on, size: 16, color: primaryRed),
+                    const SizedBox(width: 4),
+                    Text(
+                      "Desa Antasan",
+                      style: GoogleFonts.poppins(fontSize: 14, color: Colors.grey[600], fontWeight: FontWeight.w500),
                     ),
-                  ),
-                  IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.notifications_none,
-                      color: Colors.white,
-                      size: 28,
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.all(3),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(color: primaryBlue.withValues(alpha: 0.2), blurRadius: 12, offset: const Offset(0, 4)),
+              ],
+            ),
+            child: CircleAvatar(
+              radius: 30,
+              backgroundColor: primaryBlue.withValues(alpha: 0.1),
+              child: const Icon(Icons.person, color: primaryBlue, size: 35),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatusPasien() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 15,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Status Terkini Pasien",
+            style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold, color: primaryBlue),
+          ),
+          const SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _buildStatItem(Icons.people_alt_rounded, '12', 'Total', primaryBlue),
+              _buildStatItem(Icons.warning_rounded, '4', 'Risiko', primaryRed),
+              _buildStatItem(Icons.health_and_safety_rounded, '85%', 'Kepatuhan', primaryGreen),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: Divider(color: Colors.grey[200], height: 1),
+          ),
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: primaryRed.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Icon(Icons.monitor_heart, color: primaryRed, size: 24),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Tekanan Darah Terbaru',
+                      style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey[600]),
                     ),
-                  ),
-                ],
+                    Text(
+                      '140/95 mmHg (Bpk. Budi)',
+                      style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black87),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: primaryRed,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  'Tinggi',
+                  style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatItem(IconData icon, String value, String label, Color color) {
+    return Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.1),
+            shape: BoxShape.circle,
+          ),
+          child: Icon(icon, color: color, size: 24),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          value,
+          style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
+        ),
+        Text(
+          label,
+          style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey[600]),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMenuGrid(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: GridView.count(
+        crossAxisCount: 2,
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 16,
+        childAspectRatio: 1.05,
+        children: [
+          _buildMenuCard(
+            "Monitoring\nPasien",
+            "assets/images/logo_monitoring_pasien.png",
+            primaryBlue,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const MonitoringPasienScreen(),
+                ),
+              );
+            },
+          ),
+          _buildMenuCard(
+            "Edukasi\nStroke",
+            "assets/images/logo_edukasi_stroke.png",
+            primaryRed,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const EdukasiStrokeScreen(),
+                ),
+              );
+            },
+          ),
+          _buildMenuCard(
+            "Konsultasi\nMedis",
+            Icons.chat_rounded,
+            primaryGreen,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ChatScreen(),
+                ),
+              );
+            },
+          ),
+          _buildMenuCard(
+            "Log\nRehabilitasi",
+            Icons.edit_document,
+            primaryYellow,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const LogRehabilitasiScreen(),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMenuCard(String title, dynamic iconOrPath, Color color, {VoidCallback? onTap}) {
+    return Container(
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: color.withValues(alpha: 0.3),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap ?? () {},
+          splashColor: Colors.white.withValues(alpha: 0.2),
+          highlightColor: Colors.white.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(24),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              iconOrPath is String
+                  ? Image.asset(
+                      iconOrPath,
+                      width: 45,
+                      height: 45,
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Icon(Icons.image_not_supported, color: Colors.white, size: 40);
+                      },
+                    )
+                  : Icon(iconOrPath, color: Colors.white, size: 45),
+              const SizedBox(height: 12),
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                style: GoogleFonts.poppins(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  height: 1.2,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNotifications(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Notifikasi',
+                style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold, color: primaryBlue),
+              ),
+              TextButton(
+                onPressed: () {},
+                child: Text(
+                  'Lihat Semua',
+                  style: GoogleFonts.poppins(fontSize: 14, color: primaryBlue, fontWeight: FontWeight.w500),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          _buildNotificationItem(context, Icons.favorite, 'Cek Tensi Pak Budi', '08:00', primaryBlue),
+          _buildNotificationItem(context, Icons.fitness_center, 'Latihan Fisik Ibu Aisyah', '10:00', primaryGreen),
+          _buildNotificationItem(context, Icons.medication, 'Minum Obat Pak Rahmat', '14:00', primaryRed),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNotificationItem(BuildContext context, IconData icon, String title, String time, Color color) {
+    return InkWell(
+      onTap: () {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Membuka detail notifikasi...", style: GoogleFonts.poppins(color: Colors.white)),
+            backgroundColor: color,
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      },
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.02),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(icon, color: color, size: 24),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Text(
+                title,
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black87,
+                ),
               ),
             ),
-
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  // WELCOME CARD
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
-                          blurRadius: 8,
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Selamat Datang",
-                          style: GoogleFonts.poppins(
-                            fontSize: 14,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Row(
-                          children: [
-                            CircleAvatar(
-                              radius: 24,
-                              backgroundColor: Colors.grey.shade200,
-                              child: const Icon(
-                                Icons.person,
-                                color: primaryBlue,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Selamat Datang",
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 14,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                  Text(
-                                    "Kader Sigap Udin",
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(
-                                    "Desa Antasan",
-                                    style: GoogleFonts.poppins(
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  // STATUS PASIEN
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Status Terkini Pasien",
-                          style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              _miniMenu(
-                                Icons.people,
-                                "12",
-                                "Pasien",
-                              ),
-                              _miniMenu(
-                                Icons.favorite,
-                                "4",
-                                "Risiko",
-                              ),
-                              _miniMenu(
-                                Icons.monitor_heart,
-                                "85%",
-                                "Patuh",
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: _statusCard(
-                                "Tekanan Darah",
-                                "140/95",
-                                Colors.red,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: _statusCard(
-                                "Status",
-                                "Risiko Tinggi",
-                                Colors.orange,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  // MENU GRID
-                  GridView.count(
-                    crossAxisCount: 2,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12,
-                    childAspectRatio: 0.95,
-                    children: [
-                      _menuCard(
-                        "assets/images/logo_monitoring_pasien.png",
-                        "Monitoring Pasien",
-                        primaryBlue,
-                      ),
-                      _menuCard(
-                        "assets/images/logo_edukasi_stroke.png",
-                        "Edukasi Stroke",
-                        primaryRed,
-                      ),
-                      _menuCard(
-                        Icons.chat,
-                        "Konsultasi Medis",
-                        primaryGreen,
-                      ),
-                      _menuCard(
-                        Icons.description,
-                        "Log Rehabilitasi",
-                        primaryYellow,
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Notifikasi",
-                        style: GoogleFonts.poppins(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 18,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      _notificationItem(
-                        Icons.warning_amber_rounded,
-                        Colors.red,
-                        "Pak Budi",
-                        "Tekanan darah tinggi",
-                        "10 menit lalu",
-                      ),
-                      const Divider(),
-                      _notificationItem(
-                        Icons.fitness_center,
-                        Colors.orange,
-                        "Ibu Siti",
-                        "Latihan belum dilakukan",
-                        "1 jam lalu",
-                      ),
-                    ],
-                  )
-                ],
+            Text(
+              time,
+              style: GoogleFonts.poppins(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: primaryBlue,
               ),
             ),
           ],
         ),
       ),
-      bottomNavigationBar: Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black12,
-              blurRadius: 10,
-              offset: Offset(0, -2),
-            ),
-          ],
-        ),
+    );
+  }
+
+  Widget _buildBottomNav(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 20,
+            offset: const Offset(0, -5),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
         child: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           backgroundColor: Colors.white,
           selectedItemColor: primaryBlue,
-          unselectedItemColor: Colors.grey,
-          selectedLabelStyle: const TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 12,
-          ),
-          unselectedLabelStyle: const TextStyle(
-            fontSize: 12,
-          ),
+          unselectedItemColor: Colors.grey[400],
+          selectedLabelStyle: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 12),
+          unselectedLabelStyle: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: 12),
           currentIndex: 0,
+          elevation: 0,
+          onTap: (index) {
+            if (index == 1) {
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MonitoringPasienScreen()));
+            } else if (index == 2) {
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const EdukasiStrokeScreen()));
+            } else if (index == 3) {
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const ProfilKaderScreen()));
+            }
+          },
           items: const [
             BottomNavigationBarItem(
-              icon: Icon(Icons.home),
+              icon: Padding(
+                padding: EdgeInsets.only(bottom: 4),
+                child: Icon(Icons.home_rounded),
+              ),
               label: 'Beranda',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.people),
+              icon: Padding(
+                padding: EdgeInsets.only(bottom: 4),
+                child: Icon(Icons.people_alt_rounded),
+              ),
               label: 'Pasien',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.school),
+              icon: Padding(
+                padding: EdgeInsets.only(bottom: 4),
+                child: Icon(Icons.menu_book_rounded),
+              ),
               label: 'Edukasi',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.person),
+              icon: Padding(
+                padding: EdgeInsets.only(bottom: 4),
+                child: Icon(Icons.person_rounded),
+              ),
               label: 'Akun',
             ),
           ],
         ),
       ),
-    );
-  }
-
-  static Widget _miniMenu(
-    IconData icon,
-    String value,
-    String label,
-  ) {
-    return Column(
-      children: [
-        Icon(
-          icon,
-          color: primaryBlue,
-        ),
-        const SizedBox(height: 6),
-        Text(
-          value,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-          ),
-        ),
-        Text(label),
-      ],
-    );
-  }
-
-  static Widget _menuCard(
-    dynamic icon,
-    String title,
-    Color color,
-  ) {
-    return Container(
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: [
-          BoxShadow(
-            color: color.withOpacity(0.25),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          icon is String
-              ? Image.asset(
-                  icon,
-                  width: 70,
-                  height: 70,
-                  fit: BoxFit.contain,
-                  errorBuilder: (context, error, stackTrace) {
-                    return const Icon(
-                      Icons.image_not_supported,
-                      color: Colors.white,
-                      size: 50,
-                    );
-                  },
-                )
-              : Icon(
-                  icon,
-                  size: 55,
-                  color: Colors.white,
-                ),
-          const SizedBox(height: 12),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Text(
-              title,
-              textAlign: TextAlign.center,
-              style: GoogleFonts.poppins(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-                fontSize: 13,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  static Widget _statusCard(
-    String title,
-    String value,
-    Color color,
-  ) {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        children: [
-          Text(
-            title,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 6),
-          Text(
-            value,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: color,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  static Widget _notificationItem(
-    IconData icon,
-    Color color,
-    String title,
-    String subtitle,
-    String time,
-  ) {
-    return Row(
-      children: [
-        CircleAvatar(
-          backgroundColor: color.withOpacity(0.1),
-          child: Icon(
-            icon,
-            color: color,
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(subtitle),
-            ],
-          ),
-        ),
-        Text(
-          time,
-          style: const TextStyle(
-            color: Colors.grey,
-            fontSize: 12,
-          ),
-        ),
-      ],
     );
   }
 }

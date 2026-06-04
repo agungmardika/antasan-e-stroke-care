@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../dashboard/dashboard_screen.dart';
+import '../caregiver/caregiver_dashboard_screen.dart';
+import '../nakes/nakes_dashboard_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -96,12 +98,38 @@ class _LoginScreenState extends State<LoginScreen> {
                 height: 55,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const DashboardScreen(),
-                      ),
-                    );
+                    String user = usernameController.text.trim().toLowerCase();
+                    String pass = passwordController.text.trim();
+
+                    if (user == 'kader' && pass == 'kader123') {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const DashboardScreen(),
+                        ),
+                      );
+                    } else if (user == 'caregiver' && pass == 'caregiver123') {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const CaregiverDashboardScreen(),
+                        ),
+                      );
+                    } else if (user == 'nakes' && pass == 'nakes123') {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const NakesDashboardScreen(),
+                        ),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Username atau password salah! Coba kader/kader123, caregiver/caregiver123, atau nakes/nakes123'),
+                          backgroundColor: Color(0xFFD82E1D),
+                        ),
+                      );
+                    }
                   },
                   child: const Text(
                     "LOGIN",
